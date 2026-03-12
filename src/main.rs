@@ -5,7 +5,7 @@ mod cli;
 mod shell_hooks;
 
 #[derive(Parser)]
-#[command(name = "awsp")]
+#[command(name = "awsx")]
 #[command(about = "Interactive AWS profile switcher", long_about = None)]
 struct Cli {
     #[command(subcommand)]
@@ -18,7 +18,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Initialize the shell hook (e.g. `awsp init bash`)
+    /// Initialize the shell hook (e.g. `awsx init bash`)
     Init {
         #[arg(help = "The shell to generate hooks for (bash, zsh, fish)")]
         shell: String,
@@ -39,15 +39,15 @@ fn main() {
             println!("{}", selected);
         }
     } else {
-        // Just running `awsp` without the shell hook will not be able to export the variable.
+        // Just running `awsx` without the shell hook will not be able to export the variable.
         // We print a helpful message guiding them to use the hook.
-        eprintln!("awsp is designed to be used via its shell hook to export variables.");
+        eprintln!("awsx is designed to be used via its shell hook to export variables.");
         eprintln!();
         eprintln!("To set it up, add the following to your shell configuration:");
-        eprintln!("  eval \"$(awsp init zsh)\"     # For Zsh  (~/.zshrc)");
-        eprintln!("  eval \"$(awsp init bash)\"    # For Bash (~/.bashrc)");
-        eprintln!("  awsp init fish | source       # For Fish (~/.config/fish/config.fish)");
+        eprintln!("  eval \"$(awsx init zsh)\"     # For Zsh  (~/.zshrc)");
+        eprintln!("  eval \"$(awsx init bash)\"    # For Bash (~/.bashrc)");
+        eprintln!("  awsx init fish | source       # For Fish (~/.config/fish/config.fish)");
         eprintln!();
-        eprintln!("Once the hook is loaded, simply run `awsp` to select a profile interactively.");
+        eprintln!("Once the hook is loaded, simply run `awsx` to select a profile interactively.");
     }
 }

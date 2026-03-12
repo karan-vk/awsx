@@ -2,7 +2,7 @@
 set -e
 
 # Configuration
-REPO="karan-vijayakumar/awsp" # User should update this to their actual repo name
+REPO="karan-vijayakumar/awsx" # User should update this to their actual repo name
 INSTALL_DIR="/usr/local/bin"
 
 # Detect OS
@@ -21,9 +21,9 @@ case "$ARCH" in
   *)       echo "Unsupported architecture: $ARCH"; exit 1 ;;
 esac
 
-ASSET_NAME="awsp-${PLATFORM}-${SUFFIX}.tar.gz"
+ASSET_NAME="awsx-${PLATFORM}-${SUFFIX}.tar.gz"
 
-echo "Downloading awsp for ${PLATFORM}/${ARCH}..."
+echo "Downloading awsx for ${PLATFORM}/${ARCH}..."
 
 # Get latest release from GitHub API
 LATEST_RELEASE=$(curl -s https://api.github.com/repos/${REPO}/releases/latest | grep "tag_name" | cut -d '"' -f 4)
@@ -39,9 +39,9 @@ curl -L -o "/tmp/${ASSET_NAME}" "${DOWNLOAD_URL}"
 
 echo "Installing to ${INSTALL_DIR}..."
 tar -xzf "/tmp/${ASSET_NAME}" -C /tmp
-sudo mv /tmp/awsp "${INSTALL_DIR}/awsp"
-sudo chmod +x "${INSTALL_DIR}/awsp"
+sudo mv /tmp/awsx "${INSTALL_DIR}/awsx"
+sudo chmod +x "${INSTALL_DIR}/awsx"
 
-echo "Successfully installed awsp to ${INSTALL_DIR}/awsp"
+echo "Successfully installed awsx to ${INSTALL_DIR}/awsx"
 echo "Don't forget to add the shell hook to your config!"
-echo "Run 'awsp' to learn how."
+echo "Run 'awsx' to learn how."

@@ -1,4 +1,4 @@
-# awsp
+# awsx
 
 A fast, interactive command-line utility in Rust that allows you to seamlessly switch between AWS profiles. Think of it as `kubectx` with `fzf`, but specifically tailored for AWS credentials and configurations.
 
@@ -19,10 +19,10 @@ It reads directly from `~/.aws/config` and `~/.aws/credentials` and provides a n
 
 ### Installing with Homebrew (macOS/Linux)
 
-You can install `awsp` via Homebrew by tapping into your repository (or using the provided formula):
+You can install `awsx` via Homebrew by tapping into your repository (or using the provided formula):
 
 ```sh
-brew install karan-vijayakumar/tap/awsp
+brew install karan-vijayakumar/tap/awsx
 ```
 
 ### Installing with a Script (Linux/macOS)
@@ -30,7 +30,7 @@ brew install karan-vijayakumar/tap/awsp
 For a quick installation without Rust installed, you can use our installation script:
 
 ```sh
-curl -sSL https://raw.githubusercontent.com/karan-vijayakumar/awsp/main/scripts/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/karan-vijayakumar/awsx/main/scripts/install.sh | bash
 ```
 
 ### Installing with Cargo
@@ -39,28 +39,28 @@ curl -sSL https://raw.githubusercontent.com/karan-vijayakumar/awsp/main/scripts/
 cargo install --path .
 ```
 
-This will build and install the `awsp` binary to `~/.cargo/bin`. Make sure this directory is added to your system's `$PATH`.
+This will build and install the `awsx` binary to `~/.cargo/bin`. Make sure this directory is added to your system's `$PATH`.
 
 ## Setup
 
-Because a child process cannot export environment variables to its parent shell, `awsp` uses shell hooks to wrap the command. **You must add the initialization hook to your shell configuration file for `awsp` to work!**
+Because a child process cannot export environment variables to its parent shell, `awsx` uses shell hooks to wrap the command. **You must add the initialization hook to your shell configuration file for `awsx` to work!**
 
 ### Zsh
 Add this to your `~/.zshrc`:
 ```sh
-eval "$(awsp init zsh)"
+eval "$(awsx init zsh)"
 ```
 
 ### Bash
 Add this to your `~/.bashrc`:
 ```sh
-eval "$(awsp init bash)"
+eval "$(awsx init bash)"
 ```
 
 ### Fish
 Add this to your `~/.config/fish/config.fish`:
 ```fish
-awsp init fish | source
+awsx init fish | source
 ```
 
 *(Note: after adding the line, restart your terminal or `source` the config file)*
@@ -69,7 +69,7 @@ awsp init fish | source
 
 Simply run:
 ```sh
-awsp
+awsx
 ```
 
 Use your arrow keys to select a profile, type to fuzzy-search, and hit `<Enter>` to switch. The selected profile will instantly be applied as your `AWS_PROFILE` in your terminal session!

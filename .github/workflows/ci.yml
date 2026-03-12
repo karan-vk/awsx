@@ -87,22 +87,22 @@ jobs:
       - name: Package
         shell: bash
         run: |
-          BINARY_PATH="target/${{ matrix.target }}/release/awsp"
+          BINARY_PATH="target/${{ matrix.target }}/release/awsx"
           # Handle cases where target directory is just target/release for native builds
           if [ ! -f "$BINARY_PATH" ]; then
-            BINARY_PATH="target/release/awsp"
+            BINARY_PATH="target/release/awsx"
           fi
           
           mkdir -p dist
-          cp "$BINARY_PATH" dist/awsp
+          cp "$BINARY_PATH" dist/awsx
           cd dist
-          tar -czf ../awsp-${{ matrix.suffix }}.tar.gz awsp
+          tar -czf ../awsx-${{ matrix.suffix }}.tar.gz awsx
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: awsp-${{ matrix.suffix }}
-          path: awsp-${{ matrix.suffix }}.tar.gz
+          name: awsx-${{ matrix.suffix }}
+          path: awsx-${{ matrix.suffix }}.tar.gz
 
   release:
     name: Create Release
@@ -116,9 +116,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            awsp-linux-amd64/awsp-linux-amd64.tar.gz
-            awsp-linux-arm64/awsp-linux-arm64.tar.gz
-            awsp-macos-amd64/awsp-macos-amd64.tar.gz
-            awsp-macos-arm64/awsp-macos-arm64.tar.gz
+            awsx-linux-amd64/awsx-linux-amd64.tar.gz
+            awsx-linux-arm64/awsx-linux-arm64.tar.gz
+            awsx-macos-amd64/awsx-macos-amd64.tar.gz
+            awsx-macos-arm64/awsx-macos-arm64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
