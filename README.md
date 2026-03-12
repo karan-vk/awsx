@@ -77,9 +77,10 @@ Use your arrow keys to select a profile, type to fuzzy-search, and hit `<Enter>`
 ## Continuous Integration
 
 The project includes a GitHub Actions workflow that:
-- Runs `cargo fmt` and `cargo clippy`.
 - Executes tests on both **macOS** and **Linux**.
-- Automatically builds and packages release binaries for **AMD64** (x86_64) and **ARM64** (aarch64) for both platforms when a new version tag (e.g., `v0.1.0`) is pushed to the repository.
+- Automatically builds and packages release binaries for **AMD64** (x86_64) and **ARM64** (aarch64) for both platforms.
+- Includes **musl** builds for Linux to provide statically linked binaries for maximum portability (e.g., Alpine Linux).
+- Automatically creates GitHub Releases when a new version tag (e.g., `v0.1.0`) is pushed.
 
 ## License
 MIT

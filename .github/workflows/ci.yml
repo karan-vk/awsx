@@ -56,8 +56,16 @@ jobs:
             suffix: linux-amd64
             use_cross: false
           - os: ubuntu-latest
+            target: x86_64-unknown-linux-musl
+            suffix: linux-amd64-musl
+            use_cross: true
+          - os: ubuntu-latest
             target: aarch64-unknown-linux-gnu
             suffix: linux-arm64
+            use_cross: true
+          - os: ubuntu-latest
+            target: aarch64-unknown-linux-musl
+            suffix: linux-arm64-musl
             use_cross: true
           - os: macos-latest
             target: x86_64-apple-darwin
@@ -121,7 +129,9 @@ jobs:
         with:
           files: |
             awsx-linux-amd64/awsx-linux-amd64.tar.gz
+            awsx-linux-amd64-musl/awsx-linux-amd64-musl.tar.gz
             awsx-linux-arm64/awsx-linux-arm64.tar.gz
+            awsx-linux-arm64-musl/awsx-linux-arm64-musl.tar.gz
             awsx-macos-amd64/awsx-macos-amd64.tar.gz
             awsx-macos-arm64/awsx-macos-arm64.tar.gz
         env:
