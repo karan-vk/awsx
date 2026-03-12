@@ -53,11 +53,7 @@ pub fn get_aws_profiles() -> Vec<String> {
 fn extract_profiles_from_ini(conf: &Ini, profiles: &mut HashSet<String>) {
     for (sec, _) in conf.iter() {
         if let Some(s) = sec {
-            let profile_name = if s.starts_with("profile ") {
-                &s[8..]
-            } else {
-                s
-            };
+            let profile_name = s.strip_prefix("profile ").unwrap_or(s);
             profiles.insert(profile_name.to_string());
         }
     }
