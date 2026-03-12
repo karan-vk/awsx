@@ -1,86 +1,89 @@
-# awsx
+# 🚀 awsx
 
-A fast, interactive command-line utility in Rust that allows you to seamlessly switch between AWS profiles. Think of it as `kubectx` with `fzf`, but specifically tailored for AWS credentials and configurations.
+**The fastest, simplest way to switch AWS profiles in your terminal.**
 
-It reads directly from `~/.aws/config` and `~/.aws/credentials` and provides a native fuzzy-finding interface built with `inquire`.
+`awsx` is a native, interactive command-line utility that lets you switch between AWS profiles with zero friction. If you've ever used `kubectx` or `fzf`, you'll feel right at home.
 
-## Features
+---
 
-- **Fast & Lightweight:** Built in Rust. Single natively-compiled binary.
-- **Native Fuzzy Search:** No need to install `fzf` or other external tools. The interactive prompt is built-in.
-- **Secure:** Reads your standard AWS files locally without copying or parsing data elsewhere.
-- **Smart Shell Hooks:** Gracefully bypasses UNIX parent-process environment limitations so your exported `AWS_PROFILE` seamlessly updates in your current shell session.
+## ✨ Why awsx?
 
-## Installation
+*   **⚡ Blazing Fast:** Built with Rust. It starts instantly and feels snappy.
+*   **🔍 Native Fuzzy Finding:** No need to install `fzf`. Interactive search is built directly into the binary.
+*   **🛠️ Zero Dependencies:** It reads your standard `~/.aws/config` and `config` files and just works.
+*   **📦 Portable:** Statically linked binaries available for Linux (musl) and macOS (Intel & Silicon).
+*   **🔒 Secure:** Your credentials never leave your machine. `awsx` only reads what's already there.
 
-### Prerequisites
+---
 
-- [Rust & Cargo](https://rustup.rs/) installed.
+## 🚀 Quick Start in 60 Seconds
 
-### Installing with Homebrew (macOS/Linux)
-
-You can install `awsx` via Homebrew by tapping into your repository (or using the provided formula):
-
+### 1. Install it
+#### **Via Homebrew (macOS/Linux)**
 ```sh
 brew install karan-vk/tap/awsx
 ```
 
-### Installing with a Script (Linux/macOS)
-
-For a quick installation without Rust installed, you can use our installation script:
-
+#### **Via One-Liner Script (Linux/macOS)**
 ```sh
 curl -sSL https://raw.githubusercontent.com/karan-vk/awsx/main/scripts/install.sh | bash
 ```
 
-### Installing with Cargo
+### 2. Add the Hook
+Since a CLI can't change your shell's environment variables directly, `awsx` needs a small helper in your shell config.
 
+| Shell | Command to add to your config file |
+| :--- | :--- |
+| **Zsh** | `echo 'eval "$(awsx init zsh)"' >> ~/.zshrc` |
+| **Bash** | `echo 'eval "$(awsx init bash)"' >> ~/.bashrc` |
+| **Fish** | `echo 'awsx init fish \| source' >> ~/.config/fish/config.fish` |
+
+*Restart your terminal or source your config file after adding this.*
+
+### 3. Use it!
+Just type `awsx` anywhere:
 ```sh
+$ awsx
+? Select AWS Profile:
+> staging
+  production-read-only
+  personal-dev-account
+```
+**Type to filter**, use arrow keys to navigate, and hit `Enter` to switch. 
+
+---
+
+## 🛠️ Advanced Installation
+
+### From Source (Requires Rust)
+If you prefer to build it yourself:
+```sh
+git clone https://github.com/karan-vk/awsx.git
+cd awsx
 cargo install --path .
 ```
 
-This will build and install the `awsx` binary to `~/.cargo/bin`. Make sure this directory is added to your system's `$PATH`.
+---
 
-## Setup
+## ⚙️ How it works
+`awsx` parses your `~/.aws/config` and `~/.aws/credentials` libraries. It automatically deduplicates profiles and handles the `[profile name]` format correctly.
 
-Because a child process cannot export environment variables to its parent shell, `awsx` uses shell hooks to wrap the command. **You must add the initialization hook to your shell configuration file for `awsx` to work!**
+When you select a profile, the shell wrapper function exports `AWS_PROFILE` to your current session, making it immediately available for `aws`, `terraform`, `cdk`, and other AWS-aware tools.
 
-### Zsh
-Add this to your `~/.zshrc`:
-```sh
-eval "$(awsx init zsh)"
-```
+---
 
-### Bash
-Add this to your `~/.bashrc`:
-```sh
-eval "$(awsx init bash)"
-```
+## 🚥 Continuous Integration
+We take stability seriously. Every change is:
+*   Checked for code style (`cargo fmt`).
+*   Linted for best practices (`clippy`).
+*   Tested across **macOS** and **Linux**.
+*   Built for **AMD64** and **ARM64** architectures.
 
-### Fish
-Add this to your `~/.config/fish/config.fish`:
-```fish
-awsx init fish | source
-```
+---
 
-*(Note: after adding the line, restart your terminal or `source` the config file)*
+## 📜 License
+MIT © Karan Vijayakumar. See [LICENSE](LICENSE) for details.
 
-## Usage
+---
 
-Simply run:
-```sh
-awsx
-```
-
-Use your arrow keys to select a profile, type to fuzzy-search, and hit `<Enter>` to switch. The selected profile will instantly be applied as your `AWS_PROFILE` in your terminal session!
-
-## Continuous Integration
-
-The project includes a GitHub Actions workflow that:
-- Executes tests on both **macOS** and **Linux**.
-- Automatically builds and packages release binaries for **AMD64** (x86_64) and **ARM64** (aarch64) for both platforms.
-- Includes **musl** builds for Linux to provide statically linked binaries for maximum portability (e.g., Alpine Linux).
-- Automatically creates GitHub Releases when a new version tag (e.g., `v0.1.0`) is pushed.
-
-## License
-MIT
+**Star ⭐ the repo if you find this useful!**
