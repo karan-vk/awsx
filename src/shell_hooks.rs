@@ -1,63 +1,125 @@
 pub fn generate_hook(shell: &str) {
     match shell {
-        "bash" | "zsh" => {
+        "bash" => {
             let script = r#"
 awsx() {
-    if [ "$1" = "init" ]; then
-        command awsx init "$2"
+    if [ "$#" -eq 0 ]; then
+        local profile="$(command awsx switch)"
+        if [ -n "$profile" ]; then
+            export AWS_PROFILE="$profile"
+            echo "Switched to AWS profile: $AWS_PROFILE"
+        fi
         return
     fi
-    if [ "$1" = "--select" ]; then
-        command awsx --select
+    
+    if [ "$1" = "init" ] || [ "$1" = "list-profiles" ] || [ "$1" = "-h" ] || [ "$1" = "--help" ] || [ "$1" = "-V" ] || [ "$1" = "--version" ]; then
+        command awsx "$@"
         return
     fi
-
-    local profile="$(command awsx --select)"
+    
+    local profile="$(command awsx switch "$1")"
     if [ -n "$profile" ]; then
         export AWS_PROFILE="$profile"
         echo "Switched to AWS profile: $AWS_PROFILE"
     fi
 }
+_awsx_completions() {
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    local profiles="$(command awsx list-profiles)"
+    COMPREPLY=( $(compgen -W "${profiles}" -- "${cur}") )
+}
+complete -F _awsx_completions awsx
+"#;
+            println!("{}", script.trim());
+        }
+        "zsh" => {
+            let script = r#"
+awsx() {
+    if [ "$#" -eq 0 ]; then
+        local profile="$(command awsx switch)"
+        if [ -n "$profile" ]; then
+            export AWS_PROFILE="$profile"
+            echo "Switched to AWS profile: $AWS_PROFILE"
+        fi
+        return
+    fi
+    
+    if [[ "$1" == "init" || "$1" == "list-profiles" || "$1" == "-h" || "$1" == "--help" || "$1" == "-V" || "$1" == "--version" ]]; then
+        command awsx "$@"
+        return
+    fi
+    
+    local profile="$(command awsx switch "$1")"
+    if [ -n "$profile" ]; then
+        export AWS_PROFILE="$profile"
+        echo "Switched to AWS profile: $AWS_PROFILE"
+    fi
+}
+_awsx_completions() {
+    local -a profiles
+    profiles=("${(@f)$(command awsx list-profiles)}")
+    compadd -a profiles
+}
+compdef _awsx_completions awsx
 "#;
             println!("{}", script.trim());
         }
         "fish" => {
             let script = r#"
 function awsx
-    if test "$argv[1]" = "init"
-        command awsx init $argv[2]
-        return
-    end
-    if test "$argv[1]" = "--select"
-        command awsx --select
+    if test (count $argv) -eq 0
+        set -l profile (command awsx switch)
+        if test -n "$profile"
+            set -gx AWS_PROFILE "$profile"
+            echo "Switched to AWS profile: $AWS_PROFILE"
+        end
         return
     end
 
-    set -l profile (command awsx --select)
+    if contains -- $argv[1] "init" "list-profiles" "-h" "--help" "-V" "--version"
+        command awsx $argv
+        return
+    end
+
+    set -l profile (command awsx switch $argv[1])
     if test -n "$profile"
         set -gx AWS_PROFILE "$profile"
         echo "Switched to AWS profile: $AWS_PROFILE"
     end
 end
+complete -c awsx -f -a "(command awsx list-profiles)"
 "#;
             println!("{}", script.trim());
         }
         "powershell" => {
             let script = r#"
 function awsx {
-    if ($args[0] -eq "init") {
-        command awsx init $args[1]
-        return
-    }
-    if ($args[0] -eq "--select") {
-        command awsx --select
+    if ($args.Count -eq 0) {
+        $profile = (command awsx switch)
+        if ($profile) {
+            $env:AWS_PROFILE = $profile
+            Write-Host "Switched to AWS profile: $profile"
+        }
         return
     }
 
-    $profile = (command awsx --select)
+    $cmd = $args[0]
+    if ($cmd -eq "init" -or $cmd -eq "list-profiles" -or $cmd -eq "-h" -or $cmd -eq "--help" -or $cmd -eq "-V" -or $cmd -eq "--version") {
+        command awsx $args
+        return
+    }
+
+    $profile = (command awsx switch $cmd)
     if ($profile) {
         $env:AWS_PROFILE = $profile
         Write-Host "Switched to AWS profile: $profile"
+    }
+}
+Register-ArgumentCompleter -Native -CommandName awsx -ScriptBlock {
+    param($wordToComplete, $commandAst, $cursorPosition)
+    $profiles = awsx list-profiles
+    $profiles | Where-Object { $_ -like "$wordToComplete*" } | ForEach-Object {
+        [System.Management.Automation.CompletionResult]::new($_)
     }
 }
 "#;
