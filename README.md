@@ -22,7 +22,7 @@ It reads directly from `~/.aws/config` and `~/.aws/credentials` and provides a n
 You can install `awsx` via Homebrew by tapping into your repository (or using the provided formula):
 
 ```sh
-brew install karan-vijayakumar/tap/awsx
+brew install karan-vk/tap/awsx
 ```
 
 ### Installing with a Script (Linux/macOS)
@@ -30,7 +30,7 @@ brew install karan-vijayakumar/tap/awsx
 For a quick installation without Rust installed, you can use our installation script:
 
 ```sh
-curl -sSL https://raw.githubusercontent.com/karan-vijayakumar/awsx/main/scripts/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/karan-vk/awsx/main/scripts/install.sh | bash
 ```
 
 ### Installing with Cargo

@@ -2,7 +2,7 @@
 set -e
 
 # Configuration
-REPO="karan-vijayakumar/awsx" # User should update this to their actual repo name
+REPO="karan-vk/awsx"
 INSTALL_DIR="/usr/local/bin"
 
 # Detect OS

@@ -1,14 +1,30 @@
 class Awsx < Formula
   desc "Interactive AWS profile switcher"
-  homepage "https://github.com/karan-vijayakumar/awsx"
-  url "https://github.com/karan-vijayakumar/awsx/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "REPLACE_WITH_ACTUAL_SHA256" # Run 'shasum -a 256 v0.1.0.tar.gz' to get this
-  license "MIT"
+  homepage "https://github.com/karan-vk/awsx"
+  version "0.1.0"
 
-  depends_on "rust" => :build
+  on_macos do
+    if Hardware::CPU.intel?
+      url "https://github.com/karan-vk/awsx/releases/download/v#{version}/awsx-macos-amd64.tar.gz"
+      sha256 "REPLACE_WITH_MACOS_AMD64_SHA256"
+    elsif Hardware::CPU.arm?
+      url "https://github.com/karan-vk/awsx/releases/download/v#{version}/awsx-macos-arm64.tar.gz"
+      sha256 "REPLACE_WITH_MACOS_ARM64_SHA256"
+    end
+  end
+
+  on_linux do
+    if Hardware::CPU.intel?
+      url "https://github.com/karan-vk/awsx/releases/download/v#{version}/awsx-linux-amd64.tar.gz"
+      sha256 "REPLACE_WITH_LINUX_AMD64_SHA256"
+    elsif Hardware::CPU.arm? && Hardware::CPU.is_64_bit?
+      url "https://github.com/karan-vk/awsx/releases/download/v#{version}/awsx-linux-arm64.tar.gz"
+      sha256 "REPLACE_WITH_LINUX_ARM64_SHA256"
+    end
+  end
 
   def install
-    system "cargo", "install", *std_cargo_args
+    bin.install "awsx"
   end
 
   test do
