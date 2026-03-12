@@ -1,0 +1,10 @@
+[package]
+name = "awsp"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+clap = { version = "4.5.60", features = ["derive"] }
+dirs = "6.0.0"
+inquire = "0.9.4"
+rust-ini = "0.21.3"
