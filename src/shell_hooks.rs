@@ -1,4 +1,8 @@
 pub fn generate_hook(shell: &str) {
+    println!("{}", get_hook_script(shell));
+}
+
+pub fn get_hook_script(shell: &str) -> String {
     match shell {
         "bash" => {
             let script = r#"
@@ -30,7 +34,7 @@ _awsx_completions() {
 }
 complete -F _awsx_completions awsx
 "#;
-            println!("{}", script.trim());
+            script.trim().to_string()
         }
         "zsh" => {
             let script = r#"
@@ -62,7 +66,7 @@ _awsx_completions() {
 }
 compdef _awsx_completions awsx
 "#;
-            println!("{}", script.trim());
+            script.trim().to_string()
         }
         "fish" => {
             let script = r#"
@@ -89,7 +93,7 @@ function awsx
 end
 complete -c awsx -f -a "(command awsx list-profiles)"
 "#;
-            println!("{}", script.trim());
+            script.trim().to_string()
         }
         "powershell" => {
             let script = r#"
@@ -123,7 +127,7 @@ Register-ArgumentCompleter -Native -CommandName awsx -ScriptBlock {
     }
 }
 "#;
-            println!("{}", script.trim());
+            script.trim().to_string()
         }
         _ => {
             eprintln!(
@@ -132,5 +136,38 @@ Register-ArgumentCompleter -Native -CommandName awsx -ScriptBlock {
             );
             std::process::exit(1);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_bash_hook() {
+        let hook = get_hook_script("bash");
+        assert!(hook.contains("awsx()"));
+        assert!(hook.contains("complete -F _awsx_completions awsx"));
+    }
+
+    #[test]
+    fn test_zsh_hook() {
+        let hook = get_hook_script("zsh");
+        assert!(hook.contains("awsx()"));
+        assert!(hook.contains("compdef _awsx_completions awsx"));
+    }
+
+    #[test]
+    fn test_fish_hook() {
+        let hook = get_hook_script("fish");
+        assert!(hook.contains("function awsx"));
+        assert!(hook.contains("complete -c awsx"));
+    }
+
+    #[test]
+    fn test_powershell_hook() {
+        let hook = get_hook_script("powershell");
+        assert!(hook.contains("function awsx {"));
+        assert!(hook.contains("Register-ArgumentCompleter"));
     }
 }

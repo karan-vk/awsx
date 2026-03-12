@@ -9,8 +9,9 @@
 ## ✨ Why awsx?
 
 *   **⚡ Blazing Fast:** Built with Rust. It starts instantly and feels snappy.
+*   **🪄 Auto-completion:** Native support for Bash, Zsh, Fish, and PowerShell. Type `awsx <TAB>` for a list of profiles.
+*   **🏎️ Fast Switching:** Bypass the UI with `awsx <profile-name>` for instant context switching.
 *   **🔍 Native Fuzzy Finding:** No need to install `fzf`. Interactive search is built directly into the binary.
-*   **🛠️ Zero Dependencies:** It reads your standard `~/.aws/config` and `config` files and just works.
 *   **📦 Portable:** Statically linked binaries available for Linux (musl), macOS (Intel & Silicon), and Windows.
 *   **🔒 Secure:** Your credentials never leave your machine. `awsx` only reads what's already there.
 

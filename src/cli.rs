@@ -6,17 +6,16 @@ pub fn select_profile(profiles: Vec<String>) -> Option<String> {
         return None;
     }
 
-    let default_profile = std::env::var("AWS_PROFILE").unwrap_or_else(|_| String::new());
+    Select::new("Select AWS Profile:", profiles).prompt().ok()
+}
 
-    // We can pre-select the current profile if it's in the list
-    let starting_cursor = profiles
-        .iter()
-        .position(|p| p == &default_profile)
-        .unwrap_or_default();
+#[cfg(test)]
+mod tests {
+    use super::*;
 
-    let ans = Select::new("Select AWS Profile:", profiles)
-        .with_starting_cursor(starting_cursor)
-        .prompt();
-
-    ans.ok()
+    #[test]
+    fn test_select_profile_empty() {
+        let result = select_profile(vec![]);
+        assert!(result.is_none());
+    }
 }

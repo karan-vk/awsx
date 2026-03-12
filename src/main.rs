@@ -7,13 +7,13 @@ mod shell_hooks;
 #[derive(Parser)]
 #[command(name = "awsx")]
 #[command(about = "Interactive AWS profile switcher", long_about = None)]
-struct Cli {
+pub struct Cli {
     #[command(subcommand)]
-    command: Option<Commands>,
+    pub command: Option<Commands>,
 }
 
-#[derive(Subcommand)]
-enum Commands {
+#[derive(Subcommand, Debug, PartialEq)]
+pub enum Commands {
     /// Initialize the shell hook (e.g. `awsx init bash`)
     Init {
         #[arg(help = "The shell to generate hooks for (bash, zsh, fish, powershell)")]
@@ -32,37 +32,44 @@ enum Commands {
 
 fn main() {
     let args = Cli::parse();
+    if let Err(e) = run(args) {
+        eprintln!("{}", e);
+        std::process::exit(1);
+    }
+}
 
+pub fn run(args: Cli) -> Result<(), String> {
     match args.command {
         Some(Commands::Init { shell }) => {
             shell_hooks::generate_hook(&shell);
+            Ok(())
         }
         Some(Commands::ListProfiles) => {
             let profiles = aws_config::get_aws_profiles();
             for p in profiles {
                 println!("{}", p);
             }
+            Ok(())
         }
         Some(Commands::Switch { profile }) => {
             let profiles = aws_config::get_aws_profiles();
 
             if let Some(target) = profile {
-                // Validate if the requested profile exists
                 if profiles.contains(&target) {
                     println!("{}", target);
+                    Ok(())
                 } else {
-                    eprintln!("Error: Profile '{}' not found.", target);
+                    Err(format!("Error: Profile '{}' not found.", target))
                 }
             } else {
                 // Interactive mode
                 if let Some(selected) = cli::select_profile(profiles) {
                     println!("{}", selected);
                 }
+                Ok(())
             }
         }
         None => {
-            // Just running `awsx` without the shell hook will not be able to export the variable.
-            // We print a helpful message guiding them to use the hook.
             eprintln!("awsx is designed to be used via its shell hook to export variables.");
             eprintln!();
             eprintln!("To set it up, add the following to your shell configuration:");
@@ -76,6 +83,41 @@ fn main() {
             eprintln!(
                 "Once the hook is loaded, simply run `awsx` to select a profile interactively, or `awsx <profile>` to switch directly."
             );
+            Ok(())
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_cli_parsing() {
+        let cli = Cli::parse_from(["awsx", "init", "bash"]);
+        assert!(matches!(cli.command, Some(Commands::Init { .. })));
+
+        if let Some(Commands::Init { shell }) = cli.command {
+            assert_eq!(shell, "bash");
+        }
+    }
+
+    #[test]
+    fn test_switch_cmd_parsing() {
+        let cli = Cli::parse_from(["awsx", "switch", "my-profile"]);
+        assert!(matches!(
+            cli.command,
+            Some(Commands::Switch { profile: Some(_) })
+        ));
+
+        if let Some(Commands::Switch { profile }) = cli.command {
+            assert_eq!(profile, Some("my-profile".to_string()));
+        }
+    }
+
+    #[test]
+    fn test_list_profiles_parsing() {
+        let cli = Cli::parse_from(["awsx", "list-profiles"]);
+        assert_eq!(cli.command, Some(Commands::ListProfiles));
     }
 }
