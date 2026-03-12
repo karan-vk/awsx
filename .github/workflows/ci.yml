@@ -10,6 +10,10 @@ on:
 env:
   CARGO_TERM_COLOR: always
 
+permissions:
+  contents: write
+  packages: write
+
 jobs:
   check:
     name: Check, Format & Lint
@@ -121,4 +125,4 @@ jobs:
             awsx-macos-amd64/awsx-macos-amd64.tar.gz
             awsx-macos-arm64/awsx-macos-arm64.tar.gz
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
