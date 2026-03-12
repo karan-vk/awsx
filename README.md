@@ -17,6 +17,22 @@ It reads directly from `~/.aws/config` and `~/.aws/credentials` and provides a n
 
 - [Rust & Cargo](https://rustup.rs/) installed.
 
+### Installing with Homebrew (macOS/Linux)
+
+You can install `awsp` via Homebrew by tapping into your repository (or using the provided formula):
+
+```sh
+brew install karan-vijayakumar/tap/awsp
+```
+
+### Installing with a Script (Linux/macOS)
+
+For a quick installation without Rust installed, you can use our installation script:
+
+```sh
+curl -sSL https://raw.githubusercontent.com/karan-vijayakumar/awsp/main/scripts/install.sh | bash
+```
+
 ### Installing with Cargo
 
 ```sh
