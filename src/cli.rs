@@ -7,7 +7,7 @@ pub fn select_profile(profiles: Vec<String>) -> Option<String> {
     }
 
     let default_profile = std::env::var("AWS_PROFILE").unwrap_or_else(|_| String::new());
-    
+
     // We can pre-select the current profile if it's in the list
     let starting_cursor = if let Some(idx) = profiles.iter().position(|p| p == &default_profile) {
         idx

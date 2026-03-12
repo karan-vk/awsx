@@ -40,13 +40,13 @@ pub fn get_aws_profiles() -> Vec<String> {
 
     let mut profile_list: Vec<String> = profiles.into_iter().collect();
     profile_list.sort();
-    
+
     // Ensure "default" is always at the top if it exists, otherwise sort alphabetically
     if let Some(pos) = profile_list.iter().position(|x| x == "default") {
         profile_list.remove(pos);
         profile_list.insert(0, "default".to_string());
     }
-    
+
     profile_list
 }
 
@@ -84,16 +84,16 @@ region=us-west-2
 region=eu-central-1
 "#;
         let mut profiles = HashSet::new();
-        
+
         let creds_ini = Ini::load_from_str(creds_str).unwrap();
         extract_profiles_from_ini(&creds_ini, &mut profiles);
-        
+
         let config_ini = Ini::load_from_str(config_str).unwrap();
         extract_profiles_from_ini(&config_ini, &mut profiles);
 
         let mut actual: Vec<String> = profiles.into_iter().collect();
         actual.sort();
-        
+
         assert_eq!(actual, vec!["default", "dev", "staging"]);
     }
 }

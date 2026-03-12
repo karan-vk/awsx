@@ -43,7 +43,10 @@ end
             println!("{}", script.trim());
         }
         _ => {
-            eprintln!("Unsupported shell: {}. Supported shells are bash, zsh, fish.", shell);
+            eprintln!(
+                "Unsupported shell: {}. Supported shells are bash, zsh, fish.",
+                shell
+            );
             std::process::exit(1);
         }
     }
