@@ -21,6 +21,10 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: 0
+  CARGO_NET_RETRY: 10
+  CARGO_PROFILE_DEV_DEBUG: 0
+  CARGO_PROFILE_TEST_DEBUG: 0
 
 permissions:
   contents: write
@@ -37,6 +41,8 @@ jobs:
         with:
           components: clippy, rustfmt
       - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "check"
       - name: Check format
         run: cargo fmt -- --check
       - name: Clippy
@@ -53,8 +59,10 @@ jobs:
       - name: Set up Rust
         uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "test-${{ matrix.os }}"
       - name: Run tests
-        run: cargo test --verbose
+        run: cargo test --locked
 
   build:
     name: Build Release
@@ -106,6 +114,8 @@ jobs:
           targets: ${{ matrix.target }}
 
       - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: "build-${{ matrix.target }}"
 
       - name: Install Cross
         if: matrix.use_cross
@@ -115,9 +125,9 @@ jobs:
         shell: bash
         run: |
           if [ "${{ matrix.use_cross }}" = "true" ]; then
-            cross build --release --target ${{ matrix.target }}
+            cross build --locked --release --target ${{ matrix.target }}
           else
-            cargo build --release --target ${{ matrix.target }}
+            cargo build --locked --release --target ${{ matrix.target }}
           fi
 
       - name: Package
@@ -158,14 +168,6 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            awsx-linux-amd64/awsx-linux-amd64.tar.gz
-            awsx-linux-amd64-musl/awsx-linux-amd64-musl.tar.gz
-            awsx-linux-arm64/awsx-linux-arm64.tar.gz
-            awsx-linux-arm64-musl/awsx-linux-arm64-musl.tar.gz
-            awsx-macos-amd64/awsx-macos-amd64.tar.gz
-            awsx-macos-arm64/awsx-macos-arm64.tar.gz
-            awsx-windows-amd64/awsx-windows-amd64.tar.gz
-            awsx-windows-arm64/awsx-windows-arm64.tar.gz
+          files: awsx-*/awsx-*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
