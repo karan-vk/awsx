@@ -56,6 +56,7 @@ pub fn run(args: Cli) -> Result<(), String> {
 
             if let Some(target) = profile {
                 if profiles.contains(&target) {
+                    let _ = aws_config::update_default_profile(&target);
                     println!("{}", target);
                     Ok(())
                 } else {
@@ -64,6 +65,7 @@ pub fn run(args: Cli) -> Result<(), String> {
             } else {
                 // Interactive mode
                 if let Some(selected) = cli::select_profile(profiles) {
+                    let _ = aws_config::update_default_profile(&selected);
                     println!("{}", selected);
                 }
                 Ok(())

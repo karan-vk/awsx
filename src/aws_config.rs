@@ -42,6 +42,70 @@ pub fn get_aws_profiles() -> Vec<String> {
     result
 }
 
+pub fn update_default_profile(profile_name: &str) -> Result<(), String> {
+    if profile_name == "default" {
+        return Ok(());
+    }
+
+    let mut config_updated = false;
+    let mut creds_updated = false;
+
+    // 1. Update ~/.aws/config
+    if let Some(mut config_path) = home_dir() {
+        config_path.push(".aws");
+        config_path.push("config");
+        if let Ok(mut conf) = Ini::load_from_file(&config_path) {
+            let section_name = if profile_name == "default" {
+                "default".to_string()
+            } else {
+                format!("profile {}", profile_name)
+            };
+
+            if let Some(section) = conf.section(Some(&section_name)) {
+                let mut data = std::collections::HashMap::new();
+                for (key, value) in section.iter() {
+                    data.insert(key.to_string(), value.to_string());
+                }
+                for (key, value) in data {
+                    conf.with_section(Some("default")).set(key, value);
+                }
+                if conf.write_to_file(&config_path).is_ok() {
+                    config_updated = true;
+                }
+            }
+        }
+    }
+
+    // 2. Update ~/.aws/credentials
+    if let Some(mut creds_path) = home_dir() {
+        creds_path.push(".aws");
+        creds_path.push("credentials");
+        if let Ok(mut conf) = Ini::load_from_file(&creds_path)
+            && let Some(section) = conf.section(Some(profile_name))
+        {
+            let mut data = std::collections::HashMap::new();
+            for (key, value) in section.iter() {
+                data.insert(key.to_string(), value.to_string());
+            }
+            for (key, value) in data {
+                conf.with_section(Some("default")).set(key, value);
+            }
+            if conf.write_to_file(&creds_path).is_ok() {
+                creds_updated = true;
+            }
+        }
+    }
+
+    if config_updated || creds_updated {
+        Ok(())
+    } else {
+        Err(format!(
+            "Could not find profile '{}' in configuration files to persist.",
+            profile_name
+        ))
+    }
+}
+
 #[cfg(test)]
 pub fn parse_ini_content(content: &str) -> Vec<String> {
     let mut profiles = HashSet::new();
