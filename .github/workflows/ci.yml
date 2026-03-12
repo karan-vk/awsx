@@ -47,7 +47,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
     steps:
       - uses: actions/checkout@v4
       - name: Set up Rust
@@ -89,6 +89,14 @@ jobs:
             target: aarch64-apple-darwin
             suffix: macos-arm64
             use_cross: false
+          - os: windows-latest
+            target: x86_64-pc-windows-msvc
+            suffix: windows-amd64
+            use_cross: false
+          - os: windows-latest
+            target: aarch64-pc-windows-msvc
+            suffix: windows-arm64
+            use_cross: false
     steps:
       - uses: actions/checkout@v4
       
@@ -116,15 +124,22 @@ jobs:
         shell: bash
         run: |
           BINARY_PATH="target/${{ matrix.target }}/release/awsx"
+          if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+            BINARY_PATH="${BINARY_PATH}.exe"
+          fi
+          
           # Handle cases where target directory is just target/release for native builds
           if [ ! -f "$BINARY_PATH" ]; then
             BINARY_PATH="target/release/awsx"
+            if [[ "${{ matrix.os }}" == "windows-latest" ]]; then
+              BINARY_PATH="${BINARY_PATH}.exe"
+            fi
           fi
           
           mkdir -p dist
-          cp "$BINARY_PATH" dist/awsx
+          cp "$BINARY_PATH" dist/
           cd dist
-          tar -czf ../awsx-${{ matrix.suffix }}.tar.gz awsx
+          tar -czf ../awsx-${{ matrix.suffix }}.tar.gz *
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
@@ -150,5 +165,7 @@ jobs:
             awsx-linux-arm64-musl/awsx-linux-arm64-musl.tar.gz
             awsx-macos-amd64/awsx-macos-amd64.tar.gz
             awsx-macos-arm64/awsx-macos-arm64.tar.gz
+            awsx-windows-amd64/awsx-windows-amd64.tar.gz
+            awsx-windows-arm64/awsx-windows-arm64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}

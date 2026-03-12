@@ -11,7 +11,7 @@
 *   **⚡ Blazing Fast:** Built with Rust. It starts instantly and feels snappy.
 *   **🔍 Native Fuzzy Finding:** No need to install `fzf`. Interactive search is built directly into the binary.
 *   **🛠️ Zero Dependencies:** It reads your standard `~/.aws/config` and `config` files and just works.
-*   **📦 Portable:** Statically linked binaries available for Linux (musl) and macOS (Intel & Silicon).
+*   **📦 Portable:** Statically linked binaries available for Linux (musl), macOS (Intel & Silicon), and Windows.
 *   **🔒 Secure:** Your credentials never leave your machine. `awsx` only reads what's already there.
 
 ---
@@ -37,6 +37,7 @@ Since a CLI can't change your shell's environment variables directly, `awsx` nee
 | **Zsh** | `echo 'eval "$(awsx init zsh)"' >> ~/.zshrc` |
 | **Bash** | `echo 'eval "$(awsx init bash)"' >> ~/.bashrc` |
 | **Fish** | `echo 'awsx init fish \| source' >> ~/.config/fish/config.fish` |
+| **PowerShell** | `echo 'Invoke-Expression (awsx init powershell)' >> $PROFILE` |
 
 *Restart your terminal or source your config file after adding this.*
 
@@ -76,7 +77,7 @@ When you select a profile, the shell wrapper function exports `AWS_PROFILE` to y
 We take stability seriously. Every change is:
 *   Checked for code style (`cargo fmt`).
 *   Linted for best practices (`clippy`).
-*   Tested across **macOS** and **Linux**.
+*   Tested across **macOS**, **Linux**, and **Windows**.
 *   Built for **AMD64** and **ARM64** architectures.
 
 ---

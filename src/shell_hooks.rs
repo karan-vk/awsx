@@ -42,9 +42,30 @@ end
 "#;
             println!("{}", script.trim());
         }
+        "powershell" => {
+            let script = r#"
+function awsx {
+    if ($args[0] -eq "init") {
+        command awsx init $args[1]
+        return
+    }
+    if ($args[0] -eq "--select") {
+        command awsx --select
+        return
+    }
+
+    $profile = (command awsx --select)
+    if ($profile) {
+        $env:AWS_PROFILE = $profile
+        Write-Host "Switched to AWS profile: $profile"
+    }
+}
+"#;
+            println!("{}", script.trim());
+        }
         _ => {
             eprintln!(
-                "Unsupported shell: {}. Supported shells are bash, zsh, fish.",
+                "Unsupported shell: {}. Supported shells are bash, zsh, fish, powershell.",
                 shell
             );
             std::process::exit(1);

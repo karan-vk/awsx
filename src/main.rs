@@ -20,7 +20,7 @@ struct Cli {
 enum Commands {
     /// Initialize the shell hook (e.g. `awsx init bash`)
     Init {
-        #[arg(help = "The shell to generate hooks for (bash, zsh, fish)")]
+        #[arg(help = "The shell to generate hooks for (bash, zsh, fish, powershell)")]
         shell: String,
     },
 }
@@ -44,9 +44,12 @@ fn main() {
         eprintln!("awsx is designed to be used via its shell hook to export variables.");
         eprintln!();
         eprintln!("To set it up, add the following to your shell configuration:");
-        eprintln!("  eval \"$(awsx init zsh)\"     # For Zsh  (~/.zshrc)");
-        eprintln!("  eval \"$(awsx init bash)\"    # For Bash (~/.bashrc)");
-        eprintln!("  awsx init fish | source       # For Fish (~/.config/fish/config.fish)");
+        eprintln!("  eval \"$(awsx init zsh)\"               # For Zsh  (~/.zshrc)");
+        eprintln!("  eval \"$(awsx init bash)\"              # For Bash (~/.bashrc)");
+        eprintln!(
+            "  awsx init fish | source                 # For Fish (~/.config/fish/config.fish)"
+        );
+        eprintln!("  Invoke-Expression (awsx init powershell) # For PowerShell ($PROFILE)");
         eprintln!();
         eprintln!("Once the hook is loaded, simply run `awsx` to select a profile interactively.");
     }
