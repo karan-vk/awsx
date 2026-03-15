@@ -53,6 +53,11 @@ $ awsx
 ```
 **Type to filter**, use arrow keys to navigate, and hit `Enter` to switch. 
 
+To print every discovered profile directly to stdout with account and config metadata, run:
+```sh
+awsx --list
+```
+
 ---
 
 ## 🛠️ Advanced Installation
@@ -70,7 +75,9 @@ cargo install --path .
 ## ⚙️ How it works
 `awsx` parses your `~/.aws/config` and `~/.aws/credentials` libraries. It automatically deduplicates profiles and handles the `[profile name]` format correctly.
 
-When you select a profile, the shell wrapper function exports `AWS_PROFILE` to your current session, making it immediately available for `aws`, `terraform`, `cdk`, and other AWS-aware tools.
+When you select a profile, the shell wrapper function clears any higher-precedence AWS credential environment variables, then exports `AWS_PROFILE` and `AWS_DEFAULT_PROFILE` to your current session and enables shared config loading with `AWS_SDK_LOAD_CONFIG=1`. That makes the selected profile immediately available to `aws`, `terraform`, `cdk`, and other AWS-aware tools without a manual `export AWS_PROFILE=...` step.
+
+awsx also remembers the last profile you switched to by storing the selected profile in your shared AWS files and restores it in new shell sessions when the hook loads, unless that shell already has `AWS_PROFILE` or `AWS_DEFAULT_PROFILE` set explicitly.
 
 ---
 
